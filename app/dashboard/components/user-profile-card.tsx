@@ -20,6 +20,7 @@ import {
   Zap,
   Droplet,
   Trash2,
+  Building2,
 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import {
@@ -165,6 +166,32 @@ export function UserProfileCard() {
                   <Briefcase className="h-3.5 w-3.5" />
                   {profile.title} at {profile.company}
                 </CardDescription>
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-xs text-muted-foreground hover:text-primary"
+                  onClick={() => {
+                    setIsEditing(false) // Close profile editing if open
+                    // Open company modal
+                    const companyModalState = {
+                      isOpen: true,
+                      onClose: () => {
+                        toast({
+                          title: "Company Modal",
+                          description: "Company modal would close here in a real implementation.",
+                        })
+                      },
+                    }
+                    // This is just for demonstration - in a real app you'd use state management
+                    toast({
+                      title: "Company Details",
+                      description:
+                        "Company modal would open here. Click Edit Profile to see the profile modal instead.",
+                    })
+                  }}
+                >
+                  <Building2 className="h-3 w-3 mr-1" />
+                  Edit company details
+                </Button>
                 <CardDescription className="flex items-center gap-1 mt-1">
                   <MapPin className="h-3.5 w-3.5" />
                   {profile.location}
