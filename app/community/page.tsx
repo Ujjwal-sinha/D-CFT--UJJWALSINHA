@@ -23,6 +23,14 @@ import {
   Clock,
 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface Post {
   id: string
@@ -422,10 +430,33 @@ export default function CommunityPage() {
                         <ThumbsUp className="h-4 w-4 mr-2" />
                         {post.likes}
                       </Button>
-                      <Button variant="ghost" size="sm">
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        {post.comments}
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            {post.comments}
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Add Comment</DialogTitle>
+                            <DialogDescription>Share your thoughts on this post</DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <Textarea placeholder="Write your comment here..." className="min-h-[100px]" />
+                            <Button
+                              onClick={() => {
+                                toast({
+                                  title: "Comment Added",
+                                  description: "Your comment has been added to the post.",
+                                })
+                              }}
+                            >
+                              Post Comment
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       <Button variant="ghost" size="sm">
                         <Share2 className="h-4 w-4 mr-2" />
                         {post.shares}

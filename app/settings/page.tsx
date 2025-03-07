@@ -50,6 +50,20 @@ export default function SettingsPage() {
   }
 
   const handleResetSettings = () => {
+    // Reset all settings to default values
+    setEmail("")
+    setNotifications(true)
+    setTheme("light")
+    setLanguage("en")
+    setVolume(50)
+    setFontSize(16)
+    setAutoBackup(true)
+    setTwoFactor(false)
+    setEmailNotifications(true)
+    setPushNotifications(true)
+    setMarketingEmails(false)
+    setDataSharing(true)
+
     toast({
       title: "Settings Reset",
       description: "All settings have been restored to default values.",

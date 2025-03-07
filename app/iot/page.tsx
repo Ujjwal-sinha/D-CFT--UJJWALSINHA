@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Thermometer,
@@ -862,6 +863,11 @@ function DeviceList({ devices }: { devices: Device[] }) {
             <Badge variant={device.status === "Online" ? "default" : "secondary"}>{device.status}</Badge>
             <span className="text-sm text-muted-foreground">{device.lastReading}</span>
             <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Details
+                </Button>
+              </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>{device.name}</DialogTitle>

@@ -77,8 +77,8 @@ const carbonCredits: CarbonCredit[] = [
 
 export default function CarbonVerificationPage() {
   const { toast } = useToast()
-  const [searchQuery, setSearchQuery] = useState<string>("")
-  const [selectedStatus, setSelectedStatus] = useState<"all" | "Verified" | "Pending" | "Rejected">("all")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedStatus, setSelectedStatus] = useState("all")
   const [localCredits, setLocalCredits] = useState<CarbonCredit[]>(carbonCredits)
 
   const handleFileUpload = (creditId: string) => {
@@ -128,87 +128,11 @@ export default function CarbonVerificationPage() {
     }
   }
 
-  const filteredCredits = localCredits.filter((credit) => {
-    const matchesStatus = selectedStatus === "all" || credit.status === selectedStatus;
-    const matchesSearch = credit.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          credit.id.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
-  })
-
-  const CreditRow = ({ credit }: { credit: CarbonCredit }) => (
-    <TableRow key={credit.id}>
-      <TableCell>
-        <div>
-          <p className="font-medium">{credit.projectName}</p>
-          <p className="text-sm text-muted-foreground">{credit.id}</p>
-          <p className="text-sm text-muted-foreground">Methodology: {credit.methodology}</p>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="font-medium">{credit.amount} tons CO2e</div>
-      </TableCell>
-      <TableCell>{getStatusBadge(credit.status)}</TableCell>
-      <TableCell>
-        <div className="space-y-1">
-          <div className="flex items-center">
-            <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">Issue: {credit.issueDate}</span>
-          </div>
-          <div className="flex items-center">
-            <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">Expiry: {credit.expiryDate}</span>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="space-y-1">
-          <p className="text-sm font-medium">{credit.verifier}</p>
-          <p className="text-sm text-muted-foreground">Last verified: {credit.lastVerified}</p>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="space-y-2">
-          {credit.documents.map((doc) => (
-            <div key={doc} className="flex items-center justify-between">
-              <span className="text-sm">{doc}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleDownloadDocument(doc)}
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={() => handleFileUpload(credit.id)}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            Upload New
-          </Button>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="space-y-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={() => handleVerificationRequest(credit.id)}
-          >
-            <CheckCircle2 className="mr-2 h-4 w-4" />
-            Request Verification
-          </Button>
-          <Button variant="outline" size="sm" className="w-full">
-            <Eye className="mr-2 h-4 w-4" />
-            View Details
-          </Button>
-        </div>
-      </TableCell>
-    </TableRow>
+  const filteredCredits = localCredits.filter(
+    (credit) =>
+      (selectedStatus === "all" || credit.status === selectedStatus) &&
+      (credit.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        credit.id.toLowerCase().includes(searchQuery.toLowerCase())),
   )
 
   return (
@@ -297,17 +221,14 @@ export default function CarbonVerificationPage() {
               Refresh All
             </Button>
           </div>
-          <Tabs
-  defaultValue="all"
-  value={selectedStatus}
-  onValueChange={(value) => setSelectedStatus(value as "all" | "Verified" | "Pending" | "Rejected")}
->
-  <TabsList>
-    <TabsTrigger value="all">All Credits</TabsTrigger>
-    <TabsTrigger value="Verified">Verified</TabsTrigger>
-    <TabsTrigger value="Pending">Pending</TabsTrigger>
-    <TabsTrigger value="Rejected">Rejected</TabsTrigger>
-  </TabsList>
+
+          <Tabs defaultValue="all" value={selectedStatus} onValueChange={setSelectedStatus}>
+            <TabsList>
+              <TabsTrigger value="all">All Credits</TabsTrigger>
+              <TabsTrigger value="Verified">Verified</TabsTrigger>
+              <TabsTrigger value="Pending">Pending</TabsTrigger>
+              <TabsTrigger value="Rejected">Rejected</TabsTrigger>
+            </TabsList>
 
             <TabsContent value="all" className="mt-4">
               <Table>
@@ -324,7 +245,75 @@ export default function CarbonVerificationPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredCredits.map((credit) => (
-                    <CreditRow key={credit.id} credit={credit} />
+                    <TableRow key={credit.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{credit.projectName}</p>
+                          <p className="text-sm text-muted-foreground">{credit.id}</p>
+                          <p className="text-sm text-muted-foreground">Methodology: {credit.methodology}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{credit.amount} tons CO2e</div>
+                      </TableCell>
+                      <TableCell>{getStatusBadge(credit.status)}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="flex items-center">
+                            <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">Issue: {credit.issueDate}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">Expiry: {credit.expiryDate}</span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium">{credit.verifier}</p>
+                          <p className="text-sm text-muted-foreground">Last verified: {credit.lastVerified}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-2">
+                          {credit.documents.map((doc) => (
+                            <div key={doc} className="flex items-center justify-between">
+                              <span className="text-sm">{doc}</span>
+                              <Button variant="ghost" size="sm" onClick={() => handleDownloadDocument(doc)}>
+                                <Download className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ))}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => handleFileUpload(credit.id)}
+                          >
+                            <Upload className="mr-2 h-4 w-4" />
+                            Upload New
+                          </Button>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => handleVerificationRequest(credit.id)}
+                          >
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Request Verification
+                          </Button>
+                          <Button variant="outline" size="sm" className="w-full">
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 </TableBody>
               </Table>
@@ -348,7 +337,75 @@ export default function CarbonVerificationPage() {
                     {filteredCredits
                       .filter((credit) => credit.status === status)
                       .map((credit) => (
-                        <CreditRow key={credit.id} credit={credit} />
+                        <TableRow key={credit.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{credit.projectName}</p>
+                              <p className="text-sm text-muted-foreground">{credit.id}</p>
+                              <p className="text-sm text-muted-foreground">Methodology: {credit.methodology}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">{credit.amount} tons CO2e</div>
+                          </TableCell>
+                          <TableCell>{getStatusBadge(credit.status)}</TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center">
+                                <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm">Issue: {credit.issueDate}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm">Expiry: {credit.expiryDate}</span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <p className="text-sm font-medium">{credit.verifier}</p>
+                              <p className="text-sm text-muted-foreground">Last verified: {credit.lastVerified}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-2">
+                              {credit.documents.map((doc) => (
+                                <div key={doc} className="flex items-center justify-between">
+                                  <span className="text-sm">{doc}</span>
+                                  <Button variant="ghost" size="sm" onClick={() => handleDownloadDocument(doc)}>
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                onClick={() => handleFileUpload(credit.id)}
+                              >
+                                <Upload className="mr-2 h-4 w-4" />
+                                Upload New
+                              </Button>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                onClick={() => handleVerificationRequest(credit.id)}
+                              >
+                                <CheckCircle2 className="mr-2 h-4 w-4" />
+                                Request Verification
+                              </Button>
+                              <Button variant="outline" size="sm" className="w-full">
+                                <Eye className="mr-2 h-4 w-4" />
+                                View Details
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
                       ))}
                   </TableBody>
                 </Table>
@@ -360,3 +417,4 @@ export default function CarbonVerificationPage() {
     </div>
   )
 }
+

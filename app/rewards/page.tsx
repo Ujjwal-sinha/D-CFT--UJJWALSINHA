@@ -151,8 +151,8 @@ export default function TokenRewards() {
       })
       const aiReward: Reward = {
         id: (rewards.length + 1).toString(),
-        name: text.split("\n")[0],
-        description: text.split("\n")[1] || "AI-generated eco-friendly reward",
+        name: text.split("\n")[0] || "Eco-Friendly Workshop",
+        description: text.split("\n")[1] || "Attend an online workshop to learn about sustainable living practices",
         cost: Math.floor(Math.random() * 400) + 100,
         platform: "AI-Eco",
       }
@@ -163,10 +163,20 @@ export default function TokenRewards() {
       })
     } catch (error) {
       console.error("Error generating AI reward:", error)
+      // Provide a fallback reward
+      const fallbackReward: Reward = {
+        id: (rewards.length + 1).toString(),
+        name: "Sustainable Living Workshop",
+        description:
+          "Attend an online workshop to learn about sustainable living practices and reduce your carbon footprint",
+        cost: Math.floor(Math.random() * 400) + 100,
+        platform: "AI-Eco",
+      }
+      setRewards((prev) => [...prev, fallbackReward])
       toast({
-        title: "Error",
-        description: "Failed to generate AI reward. Please try again.",
-        variant: "destructive",
+        title: "AI Reward Generated (Demo)",
+        description: "A new demo reward has been added to the list.",
+        variant: "warning",
       })
     } finally {
       setIsGeneratingReward(false)

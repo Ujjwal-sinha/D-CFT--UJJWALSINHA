@@ -22,6 +22,17 @@ import {
   Filter,
   RefreshCw,
 } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface Requirement {
   id: string
@@ -202,10 +213,62 @@ export default function RegulatoryCompliancePage() {
                   className="pl-8 w-[300px]"
                 />
               </div>
-              <Button variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Filter className="mr-2 h-4 w-4" />
+                    Filter
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Filter Requirements</DialogTitle>
+                    <DialogDescription>Filter requirements by various criteria</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <Select defaultValue="all" onValueChange={setSelectedStatus}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="Compliant">Compliant</SelectItem>
+                          <SelectItem value="Non-Compliant">Non-Compliant</SelectItem>
+                          <SelectItem value="Pending Review">Pending Review</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Deadline</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select deadline" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Deadlines</SelectItem>
+                          <SelectItem value="upcoming">Upcoming (30 days)</SelectItem>
+                          <SelectItem value="past">Past Deadlines</SelectItem>
+                          <SelectItem value="future">Future Deadlines</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      onClick={() => {
+                        toast({
+                          title: "Filters Applied",
+                          description: "The requirements list has been filtered.",
+                        })
+                      }}
+                    >
+                      Apply Filters
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
             <Button variant="outline">
               <RefreshCw className="mr-2 h-4 w-4" />

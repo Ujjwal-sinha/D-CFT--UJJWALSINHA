@@ -13,6 +13,14 @@ import { useToast } from "@/components/ui/use-toast"
 import { ShoppingCart, Search, Tag, Leaf, Zap, Recycle, TreePine, Star, Plus, Minus } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface Product {
   id: string
@@ -279,10 +287,74 @@ export default function MarketplacePage() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Sustainability Marketplace</h1>
-        <Button variant="outline" className="flex items-center gap-2">
-          <ShoppingCart className="h-4 w-4" />
-          <span>Cart ({getTotalCartItems()})</span>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2">
+              <ShoppingCart className="h-4 w-4" />
+              <span>Cart ({getTotalCartItems()})</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Shopping Cart</DialogTitle>
+              <DialogDescription>Review your items before checkout</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              {cart.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Your cart is empty</p>
+              ) : (
+                <div className="space-y-4">
+                  {cart.map((item) => {
+                    const product =
+                      item.type === "product"
+                        ? products.find((p) => p.id === item.id)
+                        : carbonCredits.find((c) => c.id === item.id)
+
+                    if (!product) return null
+
+                    return (
+                      <div key={`${item.type}-${item.id}`} className="flex justify-between items-center">
+                        <div>
+                          <p className="text-sm font-medium">{product.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            ${product.price} x {item.quantity}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => removeFromCart(item.id, item.type)}
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="text-sm">{item.quantity}</span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => addToCart(item.id, item.type)}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="font-medium">Total:</span>
+                    <span>${getCartTotal()}</span>
+                  </div>
+                  <Button className="w-full" onClick={checkout}>
+                    Checkout
+                  </Button>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">

@@ -275,21 +275,27 @@ export default function ReportsPage() {
               <div className="flex space-x-2">
                 <Button variant="outline" size="icon" onClick={() => handleDownloadReport("pdf")}>
                   <FilePdf className="h-4 w-4" />
+                  <span className="sr-only">Download as PDF</span>
                 </Button>
                 <Button variant="outline" size="icon" onClick={() => handleDownloadReport("excel")}>
                   <FileSpreadsheet className="h-4 w-4" />
+                  <span className="sr-only">Download as Excel</span>
                 </Button>
                 <Button variant="outline" size="icon" onClick={() => handleDownloadReport("json")}>
                   <FileJson className="h-4 w-4" />
+                  <span className="sr-only">Download as JSON</span>
                 </Button>
                 <Button variant="outline" size="icon" onClick={handleShareReport}>
                   <Share2 className="h-4 w-4" />
+                  <span className="sr-only">Share Report</span>
                 </Button>
                 <Button variant="outline" size="icon" onClick={handlePrintReport}>
                   <Printer className="h-4 w-4" />
+                  <span className="sr-only">Print Report</span>
                 </Button>
                 <Button variant="outline" size="icon" onClick={handleEmailReport}>
                   <Mail className="h-4 w-4" />
+                  <span className="sr-only">Email Report</span>
                 </Button>
               </div>
             </CardHeader>
