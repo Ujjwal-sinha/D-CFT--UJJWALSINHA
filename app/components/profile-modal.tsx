@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -52,40 +52,94 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
+// Define a type for the profile data
+export interface ProfileData {
+  name: string
+  title: string
+  company: string
+  location: string
+  joinDate: string
+  bio: string
+  email: string
+  phone: string
+  website: string
+  languages: string
+  avatarUrl: string
+  isPublic: boolean
+  emailNotifications: boolean
+  pushNotifications: boolean
+  interests: string[]
+  skills: string[]
+  level: number
+  xp: number
+  nextLevelXp: number
+  badges: Array<{ id: number; name: string; color: string }>
+  achievements: number
+  followers: number
+  following: number
+  carbonSaved: number
+  energySaved: number
+  waterSaved: number
+  wasteDiverted: number
+}
+
 interface ProfileModalProps {
   isOpen: boolean
   onClose: () => void
+  profile: ProfileData
+  onUpdateProfile: (updatedProfile: ProfileData) => void
 }
 
-export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
-  const [name, setName] = useState("Alex Johnson")
-  const [email, setEmail] = useState("alex.johnson@example.com")
-  const [phone, setPhone] = useState("+1 (555) 123-4567")
-  const [bio, setBio] = useState(
-    "Passionate about reducing carbon footprints and promoting sustainable practices in tech. Leading initiatives to create a more sustainable future for our planet.",
+export function ProfileModal({ isOpen, onClose, profile, onUpdateProfile }: ProfileModalProps) {
+  // Initialize state with profile data from props
+  const [name, setName] = useState(profile?.name || "")
+  const [email, setEmail] = useState(profile?.email || "")
+  const [phone, setPhone] = useState(profile?.phone || "+1 (555) 123-4567")
+  const [bio, setBio] = useState(profile?.bio || "")
+  const [title, setTitle] = useState(profile?.title || "")
+  const [company, setCompany] = useState(profile?.company || "")
+  const [location, setLocation] = useState(profile?.location || "")
+  const [website, setWebsite] = useState(profile?.website || "https://example.com")
+  const [languages, setLanguages] = useState(profile?.languages || "English")
+  const [joinDate, setJoinDate] = useState(
+    profile?.joinDate && profile?.joinDate.includes("-") ? profile.joinDate : "2023-03-15",
   )
-  const [title, setTitle] = useState("Sustainability Champion")
-  const [company, setCompany] = useState("EcoTech Solutions")
-  const [location, setLocation] = useState("San Francisco, CA")
-  const [website, setWebsite] = useState("https://alexjohnson.eco")
-  const [languages, setLanguages] = useState("English, Spanish")
-  const [joinDate, setJoinDate] = useState("2023-03-15")
-  const [photo, setPhoto] = useState<string | null>("/placeholder.svg?height=100&width=100")
-  const [isPublic, setIsPublic] = useState(true)
-  const [emailNotifications, setEmailNotifications] = useState(true)
-  const [pushNotifications, setPushNotifications] = useState(true)
-  const [sustainabilityInterests, setSustainabilityInterests] = useState([
-    "Renewable Energy",
-    "Circular Economy",
-    "Sustainable Tech",
-    "Climate Policy",
-  ])
+  const [photo, setPhoto] = useState<string | null>(profile?.avatarUrl || null)
+  const [isPublic, setIsPublic] = useState(profile?.isPublic !== undefined ? profile.isPublic : true)
+  const [emailNotifications, setEmailNotifications] = useState(
+    profile?.emailNotifications !== undefined ? profile.emailNotifications : true,
+  )
+  const [pushNotifications, setPushNotifications] = useState(
+    profile?.pushNotifications !== undefined ? profile.pushNotifications : true,
+  )
+  const [sustainabilityInterests, setSustainabilityInterests] = useState(profile?.interests || [])
   const [newInterest, setNewInterest] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeTab, setActiveTab] = useState("personal")
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
+
+  // Update local state when profile prop changes
+  useEffect(() => {
+    if (profile) {
+      setName(profile.name || "")
+      setEmail(profile.email || "")
+      setPhone(profile.phone || "+1 (555) 123-4567")
+      setBio(profile.bio || "")
+      setTitle(profile.title || "")
+      setCompany(profile.company || "")
+      setLocation(profile.location || "")
+      setWebsite(profile.website || "https://example.com")
+      setLanguages(profile.languages || "English")
+      setJoinDate(profile.joinDate && profile.joinDate.includes("-") ? profile.joinDate : "2023-03-15")
+      setPhoto(profile.avatarUrl || null)
+      setIsPublic(profile.isPublic !== undefined ? profile.isPublic : true)
+      setEmailNotifications(profile.emailNotifications !== undefined ? profile.emailNotifications : true)
+      setPushNotifications(profile.pushNotifications !== undefined ? profile.pushNotifications : true)
+      setSustainabilityInterests(profile.interests || [])
+    }
+  }, [profile])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -121,25 +175,32 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     e.preventDefault()
     setIsSubmitting(true)
 
+    // Create updated profile object
+    const updatedProfile: ProfileData = {
+      ...profile,
+      name,
+      email,
+      phone,
+      bio,
+      title,
+      company,
+      location,
+      website,
+      languages,
+      joinDate: joinDate.includes("20") ? joinDate : profile.joinDate,
+      avatarUrl: photo || profile.avatarUrl,
+      isPublic,
+      emailNotifications,
+      pushNotifications,
+      interests: sustainabilityInterests,
+    }
+
     // Simulate API call
     setTimeout(() => {
-      console.log("Updating profile:", {
-        name,
-        email,
-        phone,
-        bio,
-        title,
-        company,
-        location,
-        website,
-        languages,
-        joinDate,
-        photo,
-        isPublic,
-        emailNotifications,
-        pushNotifications,
-        sustainabilityInterests,
-      })
+      console.log("Updating profile:", updatedProfile)
+
+      // Call the callback to update the parent component
+      onUpdateProfile(updatedProfile)
 
       toast({
         title: "Profile Updated",

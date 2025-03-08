@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -25,7 +25,44 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus } from "lucide-react"
-import { ProfileModal } from "@/app/components/profile-modal"
+import { ProfileModal, type ProfileData } from "@/app/components/profile-modal"
+
+// Add a default empty profile to ensure the profile is never undefined
+const defaultProfile: ProfileData = {
+  name: "Alex Johnson",
+  title: "Sustainability Champion",
+  company: "EcoTech Solutions",
+  location: "San Francisco, CA",
+  joinDate: "March 2023",
+  bio: "Passionate about reducing carbon footprints and promoting sustainable practices in tech. Leading initiatives to create a more sustainable future for our planet.",
+  level: 7,
+  xp: 720,
+  nextLevelXp: 1000,
+  badges: [
+    { id: 1, name: "Carbon Reducer", color: "bg-green-500" },
+    { id: 2, name: "Energy Saver", color: "bg-blue-500" },
+    { id: 3, name: "Community Leader", color: "bg-purple-500" },
+    { id: 4, name: "Water Conservationist", color: "bg-cyan-500" },
+    { id: 5, name: "Zero Waste Pioneer", color: "bg-amber-500" },
+  ],
+  achievements: 12,
+  followers: 87,
+  following: 34,
+  avatarUrl: "/placeholder.svg?height=100&width=100",
+  carbonSaved: 2.4,
+  energySaved: 345,
+  waterSaved: 1200,
+  wasteDiverted: 85,
+  interests: ["Renewable Energy", "Circular Economy", "Sustainable Tech", "Climate Policy"],
+  skills: ["Carbon Accounting", "ESG Reporting", "Sustainability Strategy", "Green IT"],
+  email: "alex.johnson@example.com",
+  phone: "+1 (555) 123-4567",
+  website: "https://alexjohnson.eco",
+  languages: "English, Spanish",
+  isPublic: true,
+  emailNotifications: true,
+  pushNotifications: true,
+}
 
 // Update the UserProfileCard component with enhanced features
 export function UserProfileCard() {
@@ -33,54 +70,14 @@ export function UserProfileCard() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
-  const [profile, setProfile] = useState({
-    name: "Alex Johnson",
-    title: "Sustainability Champion",
-    company: "EcoTech Solutions",
-    location: "San Francisco, CA",
-    joinDate: "March 2023",
-    bio: "Passionate about reducing carbon footprints and promoting sustainable practices in tech. Leading initiatives to create a more sustainable future for our planet.",
-    level: 7,
-    xp: 720,
-    nextLevelXp: 1000,
-    badges: [
-      { id: 1, name: "Carbon Reducer", color: "bg-green-500" },
-      { id: 2, name: "Energy Saver", color: "bg-blue-500" },
-      { id: 3, name: "Community Leader", color: "bg-purple-500" },
-      { id: 4, name: "Water Conservationist", color: "bg-cyan-500" },
-      { id: 5, name: "Zero Waste Pioneer", color: "bg-amber-500" },
-    ],
-    achievements: 12,
-    followers: 87,
-    following: 34,
-    avatarUrl: "/placeholder.svg?height=100&width=100",
-    carbonSaved: 2.4,
-    energySaved: 345,
-    waterSaved: 1200,
-    wasteDiverted: 85,
-    interests: ["Renewable Energy", "Circular Economy", "Sustainable Tech", "Climate Policy"],
-    skills: ["Carbon Accounting", "ESG Reporting", "Sustainability Strategy", "Green IT"],
-  })
+  // Initialize profile state with the default profile
+  const [profile, setProfile] = useState<ProfileData>(defaultProfile)
 
-  const handleSaveProfile = (formData: FormData) => {
-    const name = formData.get("name") as string
-    const title = formData.get("title") as string
-    const company = formData.get("company") as string
-    const location = formData.get("location") as string
-    const bio = formData.get("bio") as string
-
-    setProfile({
-      ...profile,
-      name,
-      title,
-      company,
-      location,
-      bio,
-    })
-
+  const handleUpdateProfile = (updatedProfile: ProfileData) => {
+    setProfile(updatedProfile)
     toast({
       title: "Profile Updated",
-      description: "Your profile information has been saved.",
+      description: "Your profile information has been saved successfully.",
     })
   }
 
@@ -115,6 +112,21 @@ export function UserProfileCard() {
   }
 
   const handleAddBadge = () => {
+    const newBadgeId = profile.badges.length + 1
+    const badgeColors = ["bg-green-500", "bg-blue-500", "bg-purple-500", "bg-cyan-500", "bg-amber-500", "bg-rose-500"]
+    const randomColor = badgeColors[Math.floor(Math.random() * badgeColors.length)]
+
+    const newBadge = {
+      id: newBadgeId,
+      name: "New Achievement",
+      color: randomColor,
+    }
+
+    setProfile({
+      ...profile,
+      badges: [...profile.badges, newBadge],
+    })
+
     toast({
       title: "Badge Added",
       description: "New sustainability badge has been added to your profile.",
@@ -122,10 +134,75 @@ export function UserProfileCard() {
   }
 
   const handleAddSkill = () => {
-    toast({
-      title: "Skill Added",
-      description: "New sustainability skill has been added to your profile.",
-    })
+    const newSkills = [...profile.skills]
+    const potentialSkills = [
+      "Renewable Energy Management",
+      "Waste Reduction",
+      "Sustainable Supply Chain",
+      "Carbon Footprint Analysis",
+      "Environmental Impact Assessment",
+      "Circular Economy Design",
+      "Sustainable Development",
+    ]
+
+    // Find a skill that's not already in the list
+    const availableSkills = potentialSkills.filter((skill) => !newSkills.includes(skill))
+
+    if (availableSkills.length > 0) {
+      const newSkill = availableSkills[Math.floor(Math.random() * availableSkills.length)]
+      newSkills.push(newSkill)
+
+      setProfile({
+        ...profile,
+        skills: newSkills,
+      })
+
+      toast({
+        title: "Skill Added",
+        description: `${newSkill} has been added to your skills.`,
+      })
+    } else {
+      toast({
+        title: "No New Skills",
+        description: "You already have all available skills!",
+      })
+    }
+  }
+
+  const handleAddInterest = () => {
+    const newInterests = [...profile.interests]
+    const potentialInterests = [
+      "Biodiversity Conservation",
+      "Clean Energy",
+      "Sustainable Agriculture",
+      "Ocean Conservation",
+      "Green Building",
+      "Zero Waste Movement",
+      "Climate Activism",
+    ]
+
+    // Find an interest that's not already in the list
+    const availableInterests = potentialInterests.filter((interest) => !newInterests.includes(interest))
+
+    if (availableInterests.length > 0) {
+      const newInterest = availableInterests[Math.floor(Math.random() * availableInterests.length)]
+      newInterests.push(newInterest)
+
+      setProfile({
+        ...profile,
+        interests: newInterests,
+      })
+
+      toast({
+        title: "Interest Added",
+        description: `${newInterest} has been added to your interests.`,
+      })
+    } else {
+      toast({
+        title: "No New Interests",
+        description: "You already have all available interests!",
+      })
+    }
   }
 
   const openCompanyModal = () => {
@@ -206,7 +283,7 @@ export function UserProfileCard() {
             <TabsContent value="overview" className="space-y-4 mt-4">
               <p className="text-sm text-muted-foreground">{profile.bio}</p>
               <div className="flex flex-wrap items-center gap-2 mb-4">
-                {profile.badges.map((badge) => (
+                {profile.badges.map((badge: { id: Key | null | undefined; color: any; name: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined }) => (
                   <Badge key={badge.id} className={`${badge.color} hover:${badge.color}/90 transition-colors`}>
                     {badge.name}
                   </Badge>
@@ -275,7 +352,7 @@ export function UserProfileCard() {
               <div>
                 <h3 className="text-sm font-medium mb-2">Sustainability Skills</h3>
                 <div className="flex flex-wrap gap-2">
-                  {profile.skills.map((skill, index) => (
+                  {profile.skills.map((skill: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined, index: Key | null | undefined) => (
                     <Badge key={index} variant="outline" className="bg-background">
                       {skill}
                     </Badge>
@@ -289,12 +366,12 @@ export function UserProfileCard() {
               <div>
                 <h3 className="text-sm font-medium mb-2">Interests</h3>
                 <div className="flex flex-wrap gap-2">
-                  {profile.interests.map((interest, index) => (
+                  {profile.interests.map((interest: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined, index: Key | null | undefined) => (
                     <Badge key={index} variant="secondary">
                       {interest}
                     </Badge>
                   ))}
-                  <Button variant="outline" size="sm" className="h-7" onClick={handleAddSkill}>
+                  <Button variant="outline" size="sm" className="h-7" onClick={handleAddInterest}>
                     <Plus className="h-3.5 w-3.5 mr-1" /> Add Interest
                   </Button>
                 </div>
@@ -332,7 +409,14 @@ export function UserProfileCard() {
       </Card>
 
       {/* Profile Modal */}
-      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
+      {isProfileModalOpen && (
+        <ProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          profile={profile}
+          onUpdateProfile={handleUpdateProfile}
+        />
+      )}
     </>
   )
 }
