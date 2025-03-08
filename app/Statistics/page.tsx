@@ -26,6 +26,12 @@ const data = [
   { year: 2022, emission: 2831166200 },
   { year: 2023, emission: 3062324500 },
   { year: 2024, emission: 3262324500 },
+  { year: 2025, emission: 3588556950 },
+  { year: 2026, emission: 3947412645 },
+  { year: 2027, emission: 4342153910 },
+  { year: 2028, emission: 4776369301 },
+  { year: 2029, emission: 5254006231 },
+  { year: 2030, emission: 5779406854 },
 ];
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#ff6384", "#36a2eb"];
@@ -47,7 +53,6 @@ const CarbonEmissionDashboard: React.FC = () => {
     <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">India Carbon Emission Growth</h1>
 
-      {/* Line Chart with Gradient */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-xl font-semibold text-center mb-4">Trend Over the Years</h2>
         <ResponsiveContainer width="100%" height={400}>
@@ -67,7 +72,6 @@ const CarbonEmissionDashboard: React.FC = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Bar Chart with Styling */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-xl font-semibold text-center mb-4">Yearly Carbon Emission</h2>
         <ResponsiveContainer width="100%" height={400}>
@@ -81,7 +85,6 @@ const CarbonEmissionDashboard: React.FC = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Pie Chart */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-xl font-semibold text-center mb-4">Emission Distribution (Recent Years)</h2>
         <ResponsiveContainer width="100%" height={400}>
