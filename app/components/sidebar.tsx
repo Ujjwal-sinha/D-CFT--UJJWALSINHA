@@ -41,6 +41,7 @@ export function Sidebar() {
     { name: "Notifications", path: "/notifications", icon: <Bell className="h-5 w-5" /> },
     { name: "Premium Plans", path: "/premium-plans", icon: <Sparkles className="h-5 w-5" /> },
     { name: "Settings", path: "/settings", icon: <Settings className="h-5 w-5" /> },
+    { name: "Statistics", path: "/Statistics", icon: <Sparkles className="h-5 w-5" /> },
   ]
 
   return (
