@@ -17,6 +17,7 @@ import {
   Landmark,
   Wallet,
   Sparkles,
+  Heart,
 } from "lucide-react"
 
 export function Sidebar() {
@@ -42,6 +43,8 @@ export function Sidebar() {
     { name: "Premium Plans", path: "/premium-plans", icon: <Sparkles className="h-5 w-5" /> },
     { name: "Settings", path: "/settings", icon: <Settings className="h-5 w-5" /> },
     { name: "Statistics", path: "/Statistics", icon: <Sparkles className="h-5 w-5" /> },
+    { name: "NGO Initiatives", path: "/ngo", icon: <Heart className="h-5 w-5" /> },
+   
   ]
 
   return (
